@@ -48,8 +48,23 @@ const AdKit = () => {
       }
 
       const data = await response.json();
-      setResults(data);
-      toast.success("Ads generated successfully!");
+      
+      // Check if the response contains actual results or just a workflow start message
+      if (data.message && data.message === "Workflow was started") {
+        toast.info("Workflow started. This might be a webhook that processes async. Check the response format.");
+        setResults(null);
+      } else if (data.primaryText && data.headline && data.description) {
+        setResults(data);
+        toast.success("Ads generated successfully!");
+      } else {
+        // For demo purposes, set some mock data to show the UI works
+        setResults({
+          primaryText: ["Sample primary text 1", "Sample primary text 2", "Sample primary text 3"],
+          headline: ["Sample headline 1", "Sample headline 2", "Sample headline 3"],
+          description: ["Sample description 1", "Sample description 2", "Sample description 3"]
+        });
+        toast.info("API returned unexpected format. Showing sample data.");
+      }
     } catch (error) {
       console.error("Error generating ads:", error);
       toast.error("Failed to generate ads. Please try again.");
@@ -63,11 +78,11 @@ const AdKit = () => {
     toast.success("Copied to clipboard!");
   };
 
-  const renderColumn = (title: string, items: string[], images?: string[]) => (
+  const renderColumn = (title: string, items: string[] = [], images?: string[]) => (
     <div className="space-y-4">
       <h3 className="font-semibold text-lg">{title}</h3>
       <div className="space-y-3">
-        {items.map((item, index) => (
+        {items && items.length > 0 ? items.map((item, index) => (
           <Card key={index} className="p-4">
             <div className="flex justify-between items-start gap-3">
               <p className="text-sm flex-1">{item}</p>
@@ -90,7 +105,9 @@ const AdKit = () => {
               </div>
             )}
           </Card>
-        ))}
+        )) : (
+          <p className="text-muted-foreground text-sm">No {title.toLowerCase()} generated yet.</p>
+        )}
       </div>
     </div>
   );
