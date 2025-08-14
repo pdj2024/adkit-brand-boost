@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -31,7 +32,7 @@ const AdKit = () => {
 
     setIsLoading(true);
     try {
-      const response = await fetch("https://78398d7a9140.ngrok-free.app/webhook-test/c8be406b-ee83-497e-877f-a5fe26cae487", {
+      const response = await fetch("https://78398d7a9140.ngrok-free.app/webhook/c8be406b-ee83-497e-877f-a5fe26cae487", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
