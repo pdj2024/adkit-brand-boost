@@ -53,6 +53,15 @@ const AdKit = () => {
       if (data.message && data.message === "Workflow was started") {
         toast.info("Workflow started. This might be a webhook that processes async. Check the response format.");
         setResults(null);
+      } else if (Array.isArray(data) && data.length > 0 && data[0].text && data[0].headline && data[0].description) {
+        // Handle array response from n8n webhook
+        const firstResult = data[0];
+        setResults({
+          primaryText: [firstResult.text],
+          headline: [firstResult.headline],
+          description: [firstResult.description]
+        });
+        toast.success("Ads generated successfully!");
       } else if (data.text && data.headline && data.description) {
         // Convert single strings to arrays for consistent UI handling
         setResults({
@@ -65,6 +74,7 @@ const AdKit = () => {
         setResults(data);
         toast.success("Ads generated successfully!");
       } else {
+        console.log("Unexpected API response format:", data);
         // For demo purposes, set some mock data to show the UI works
         setResults({
           primaryText: ["Sample primary text 1", "Sample primary text 2", "Sample primary text 3"],
