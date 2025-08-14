@@ -53,6 +53,14 @@ const AdKit = () => {
       if (data.message && data.message === "Workflow was started") {
         toast.info("Workflow started. This might be a webhook that processes async. Check the response format.");
         setResults(null);
+      } else if (data.text && data.headline && data.description) {
+        // Convert single strings to arrays for consistent UI handling
+        setResults({
+          primaryText: [data.text],
+          headline: [data.headline],
+          description: [data.description]
+        });
+        toast.success("Ads generated successfully!");
       } else if (data.primaryText && data.headline && data.description) {
         setResults(data);
         toast.success("Ads generated successfully!");
